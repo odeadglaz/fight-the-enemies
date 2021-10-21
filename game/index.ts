@@ -10,6 +10,8 @@ class EnemiesHanlder {
   private enemyInterval: number = 1500;
   private enemyTimer: number = 0;
 
+  constructor(private onEnemyLeave: Function) {}
+
   draw(gameSpeed) {
     if (this.enemyTimer > this.enemyInterval) {
       this.addEnemy();
@@ -23,7 +25,13 @@ class EnemiesHanlder {
       enemy.draw();
     });
 
-    this.enemies = this.enemies.filter((enemy) => enemy.visible());
+    this.enemies = this.enemies.filter((enemy) => {
+      const isVisible = enemy.visible();
+      if (enemy.leftBoard) {
+        this.onEnemyLeave();
+      }
+      return isVisible;
+    });
   }
 
   killEnemy(position: { x: number; y: number }): Enemy | undefined {
@@ -74,8 +82,9 @@ class ExplosionsHandler {
 
 class Game {
   private score: number = 0;
+  private life: number = 3;
   private animationFrame: number;
-  private enemiesHandler = new EnemiesHanlder();
+  private enemiesHandler = new EnemiesHanlder(() => this.decreaseLife());
   private explosionsHandler = new ExplosionsHandler();
 
   private lastGameTimestamp: number;
@@ -104,6 +113,10 @@ class Game {
     this.draw();
   }
 
+  decreaseLife() {
+    this.life--;
+  }
+
   stop() {
     cancelAnimationFrame(this.animationFrame);
   }
@@ -119,18 +132,28 @@ class Game {
     this.explosionsHandler.draw(animatioRate);
 
     this.drawScore();
+    this.drawLifeLeft();
 
     this.lastGameTimestamp = timestamp;
 
     this.animationFrame = requestAnimationFrame((time) => this.draw(time));
+
+    if (this.life < 0) {
+      this.stop();
+      this.drawGameOver();
+    }
   }
 
   drawScore() {
     painter.text(`Game score: ${this.score}`, { x: 20, y: 50 });
   }
 
+  drawLifeLeft() {
+    painter.text(`Life: ${Math.max(this.life, 0)}`, { x: 480, y: 50 });
+  }
+
   drawGameOver() {
-    painter.text(`Game Over :()`, { x: 300, y: 250 });
+    painter.text(`Game Over :()`, { x: 175, y: 250 }, 'red');
   }
 }
 

@@ -11,10 +11,10 @@ export const line = (from, to, color = 'rgba(0, 0, 0, 0.75)') => {
   context.closePath();
 };
 
-export const text = (text, position) => {
+export const text = (text, position, color = 'white') => {
   context.font = '36px Malbic';
   context.fillStyle = 'black';
   context.fillText(text, position.x, position.y - 3);
-  context.fillStyle = 'white';
+  context.fillStyle = color;
   context.fillText(text, position.x, position.y);
 }

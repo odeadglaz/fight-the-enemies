@@ -17,7 +17,7 @@ export class Enemy {
   spriteHeight: number;
   image: HTMLImageElement;
   removed: boolean = false;
-
+  leftBoard: boolean = false;
   maxSpriteFrames = 6;
   currentFrame = 0;
 
@@ -28,9 +28,12 @@ export class Enemy {
   }
 
   visible() {
-    const leftVerticalEdge = this.x < -this.width;
+    const insideBoard = this.x > -this.width;
+    if (!insideBoard) {
+      this.leftBoard = true;
+    }
 
-    return !this.removed && !leftVerticalEdge;
+    return !this.removed && insideBoard;
   }
 
   die() {
@@ -152,7 +155,13 @@ export class Spider extends Enemy {
       return false;
     }
 
-    return !this.reachedMaxDropHeight || this.y > -this.height;
+    const insideBoard = !this.reachedMaxDropHeight || this.y > -this.height;
+
+    if (!insideBoard) {
+      this.leftBoard = true;
+    }
+
+    return insideBoard;
   }
 
   draw() {
