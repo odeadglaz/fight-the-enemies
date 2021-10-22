@@ -17,4 +17,25 @@ export const text = (text, position, color = 'white') => {
   context.fillText(text, position.x, position.y - 3);
   context.fillStyle = color;
   context.fillText(text, position.x, position.y);
-}
+};
+
+export const crossair = (point, { size = 10, color = 'black' }) => {
+  // Crossair circle
+  context.beginPath();
+  context.arc(point.x, point.y, size, 0, Math.PI * 2);
+  context.strokeStyle = color;
+  context.stroke();
+  context.closePath();
+
+  // Crossair cross
+  context.beginPath();
+  context.strokeStyle = 'red';
+  context.moveTo(point.x, point.y - 15);
+  context.lineTo(point.x, point.y + 15);
+  context.moveTo(point.x - 15, point.y);
+  context.lineTo(point.x + 15, point.y);
+
+  context.stroke();
+
+  context.closePath();
+};

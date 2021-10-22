@@ -83,6 +83,7 @@ class ExplosionsHandler {
 class Game {
   private score: number = 0;
   private life: number = 3;
+  private mousePosition = { x: undefined, y: undefined };
   private animationFrame: number;
   private enemiesHandler = new EnemiesHanlder(() => this.decreaseLife());
   private explosionsHandler = new ExplosionsHandler();
@@ -110,6 +111,13 @@ class Game {
       }
     });
 
+    canvas.addEventListener('mousemove', (event) => {
+      Object.assign(this.mousePosition, {
+        x: event.x,
+        y: event.y
+      })
+    });
+
     this.draw();
   }
 
@@ -128,6 +136,9 @@ class Game {
       ? timestamp - this.lastGameTimestamp
       : 16;
 
+
+    this.drawCrossair();
+
     this.enemiesHandler.draw(animatioRate);
     this.explosionsHandler.draw(animatioRate);
 
@@ -142,6 +153,12 @@ class Game {
       this.stop();
       this.drawGameOver();
     }
+  }
+
+  drawCrossair() {
+    painter.crossair(this.mousePosition, {
+      size: 10
+    });
   }
 
   drawScore() {
