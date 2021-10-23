@@ -93,6 +93,14 @@ class Game {
   start() {
     this.enemiesHandler.addEnemy();
 
+    this.attachEvents();
+
+    canvas.classList.toggle('playing');
+
+    this.draw();
+  }
+
+  attachEvents() {
     canvas.addEventListener('click', (event) => {
       const clickPosition = {
         x: event.x,
@@ -114,11 +122,9 @@ class Game {
     canvas.addEventListener('mousemove', (event) => {
       Object.assign(this.mousePosition, {
         x: event.x,
-        y: event.y
-      })
+        y: event.y,
+      });
     });
-
-    this.draw();
   }
 
   decreaseLife() {
@@ -127,6 +133,8 @@ class Game {
 
   stop() {
     cancelAnimationFrame(this.animationFrame);
+
+    canvas.classList.toggle('playing');
   }
 
   draw(timestamp: number = 0) {
@@ -136,14 +144,12 @@ class Game {
       ? timestamp - this.lastGameTimestamp
       : 16;
 
-
-    this.drawCrossair();
-
     this.enemiesHandler.draw(animatioRate);
     this.explosionsHandler.draw(animatioRate);
 
     this.drawScore();
     this.drawLifeLeft();
+    this.drawCrossair();
 
     this.lastGameTimestamp = timestamp;
 
@@ -157,7 +163,7 @@ class Game {
 
   drawCrossair() {
     painter.crossair(this.mousePosition, {
-      size: 10
+      size: 10,
     });
   }
 
@@ -170,7 +176,7 @@ class Game {
   }
 
   drawGameOver() {
-    painter.text(`Game Over :()`, { x: 175, y: 250 }, 'red');
+    painter.animateText(`Game Over :()`, { x: 175, y: 250 }, 'red');
   }
 }
 
